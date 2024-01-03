@@ -17,6 +17,7 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
         InitializeKeyAndIV();
     }
 
+    // 암호화 키와 초기화 벡터 생성 또는 로드
     private void InitializeKeyAndIV()
     {
         if (PlayerPrefs.HasKey("EncryptionKey") && PlayerPrefs.HasKey("EncryptionIV"))
@@ -38,6 +39,7 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
         }
     }
 
+    // 암호화 키와 IV를 PlayerPrefs에 저장
     private void SaveKeyAndIVToPlayerPrefs(byte[] key, byte[] iv)
     {
         PlayerPrefs.SetString("EncryptionKey", Convert.ToBase64String(key));
@@ -45,6 +47,7 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
         PlayerPrefs.Save();
     }
 
+    // 데이터 저장 : Json으로 직렬화하고, 암호화하여 해시값과 함께 파일에 저장
     public void SaveData(DataManager data)
     {
         string json = JsonConvert.SerializeObject(data, Formatting.Indented);
@@ -57,6 +60,7 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
         Debug.Log(json);
     }
 
+    // 데이터 로드 : 파이렝서 암호화된 데이터와 해시를 읽고, 무결성 검사 후 복호화
     public DataManager LoadData()
     {
         string path = GetSaveFilePath();
@@ -77,6 +81,8 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
 
         return null;
     }
+
+    // 저장된 데이터 삭제
     public void DeleteData()
     {
         string path = GetSaveFilePath();
@@ -90,6 +96,7 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
         }
     }
 
+    // AES 암호화 알고리즘을 사용하여 암호화
     private string Encrypt(string plainText)
     {
         using (Aes aesAlg = Aes.Create())
@@ -112,6 +119,7 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
         }
     }
 
+    // AES 암호화 알고리즘을 사용하여 주어진 암호문을 복호화
     private string Decrypt(string cipherText)
     {
         string plaintext = null;
@@ -136,6 +144,7 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
         return plaintext;
     }
 
+    // Raw 데이터에 대한 SHA256 해시를 계산
     private string ComputeSha256Hash(string rawData)
     {
         using (SHA256 sha256hash = SHA256.Create())
@@ -150,6 +159,7 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
         }
     }
 
+    // 실제 데이터가 저장될 파일의 경로를 생성
     private string GetSaveFilePath()
     {
         return Application.persistentDataPath + "/save" + SaveSlot + ".json";
