@@ -14,6 +14,7 @@ public class UILanguageOption : MonoBehaviour
 
     void InitializeDropdown()
     {
+        // 옵저버 패턴 사용: 드롭다운 값이 변경될 때 OnSelectionChanged 메서드를 호출
         languageDropdown.onValueChanged.AddListener(OnSelectionChanged);
         languageDropdown.ClearOptions();
         languageDropdown.options.Add(new TMP_Dropdown.OptionData("Loading..."));
@@ -68,6 +69,7 @@ public class UILanguageOption : MonoBehaviour
         return selectedOption;
     }
 
+    // 드롭다운에서 선택한 언어를 변경할 때 호출되는 메서드
     void OnSelectionChanged(int index)
     {
         if (index >= 0 && index < LocalizationSettings.AvailableLocales.Locales.Count)
